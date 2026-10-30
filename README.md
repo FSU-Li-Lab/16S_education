@@ -23,7 +23,6 @@ Student projects have successfully characterized microbial communities in campus
 | `SI_Microbial_community_analysis_procedure.docx` | Step-by-step wet lab protocol (sample collection, direct PCR, library preparation, MiSeq submission) |
 | `SI_Project_Design_template.docx` | Student project design template with guided prompts for hypothesis development |
 | `SI_Cost.xlsx` | Itemized cost breakdown per sample and per class cohort |
-| `Student_Survey.docx` | Post-course survey for assessment of student learning outcomes |
 
 ---
 
@@ -94,18 +93,6 @@ Total cost per sample is approximately **$13 USD** when sequencing is batched ac
 ## Curriculum Framework
 
 This module is designed as a Course-based Undergraduate Research Experience (CURE) [[9,10]](#references), in which students contribute original data rather than repeat predetermined outcomes. The CURE model has been shown to improve student motivation, deepen conceptual understanding, and broaden access to authentic research experiences across undergraduate populations. The curriculum aligns with American Society for Microbiology (ASM) curricular guidelines emphasizing scientific thinking, quantitative analysis, and communication.
-
----
-
-## IRB
-
-Environmental sample collection does not involve human subjects. The post-course student survey is anonymous and voluntary and is conducted under Florida State University IRB protocol [insert protocol number upon approval] through the FSU Office for Human Subjects Protection.
-
----
-
-## Acknowledgments
-
-This work was supported by the Florida State University startup fund, the FSU First-Year Assistant Professor Award, and the Innovations for Gram-Negative Antibiotic Discovery program funded by the Novo Nordisk Foundation (NNF25SA0112407).
 
 ---
 
