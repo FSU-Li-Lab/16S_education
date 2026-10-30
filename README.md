@@ -23,7 +23,7 @@ Student projects have characterized microbial communities in campus water source
 | `Microbiome_Research_Project_Proposal_Template.docx` | Project proposal template students complete (research question, hypothesis, sampling plan, controls, biosafety, timeline) before any sampling begins |
 | `Microbial_community_analysis_wetlab_guide.docx` | Step-by-step laboratory workflow (cell collection, direct PCR, bead cleanup, index PCR, library purification) plus guidance for preparing QIIME 2 manifest and metadata files |
 | `16S_rRNA_Colab_Notebook.ipynb` | Google Colab notebook for QIIME 2 analysis (import, DADA2, taxonomy, diversity, ANCOM-BC) |
-| `SI_Cost.xlsx` | Itemized cost breakdown per sample and per class cohort |
+| `Cost.xlsx` | Itemized cost breakdown per sample and per class cohort |
 
 ---
 
