@@ -83,7 +83,7 @@ No local software installation is required. QIIME 2 [[5]](#references) (2024.5) 
 **Wet lab:**
 - Standard molecular biology equipment (centrifuge, thermocycler, gel electrophoresis, magnetic rack)
 - Sterile swabs and collection tubes
-- PCR reagents and primers (see `SI_Cost.xlsx` for items and costs)
+- PCR reagents and primers (see `Cost.xlsx` for items and costs)
 
 **Bioinformatic analysis:**
 - Google account (free)
@@ -94,19 +94,13 @@ No local software installation is required. QIIME 2 [[5]](#references) (2024.5) 
 
 ## Cost
 
-Total cost per sample is approximately **$13 USD** when sequencing is batched across a class cohort (~24 samples per run). This represents a ~35% reduction compared to conventional DNA extraction-based methods (~$20/sample). See `SI_Cost.xlsx` for a complete breakdown including reagents, consumables, and sequencing fees.
+Total cost per sample is approximately **$13 USD** when sequencing is batched across a class cohort (~24 samples per run). This represents a 35% reduction compared to conventional DNA extraction-based methods (about $20/sample). See `SI_Cost.xlsx` for a complete breakdown including reagents, consumables, and sequencing fees.
 
 ---
 
 ## Curriculum Framework
 
 This module is designed as a Course-based Undergraduate Research Experience (CURE) [[9,10]](#references), in which students contribute original data rather than repeat predetermined outcomes. The CURE model has been shown to improve student motivation, deepen conceptual understanding, and broaden access to authentic research experiences across undergraduate populations. The curriculum aligns with American Society for Microbiology (ASM) curricular guidelines emphasizing scientific thinking, quantitative analysis, and communication.
-
----
-
-## Acknowledgments
-
-This work was supported by the Florida State University startup fund, the FSU First-Year Assistant Professor Award, and the Innovations for Gram-Negative Antibiotic Discovery program funded by the Novo Nordisk Foundation (NNF25SA0112407).
 
 ---
 
@@ -132,7 +126,6 @@ This work was supported by the Florida State University startup fund, the FSU Fi
 
 [10] Bangera, G., & Brownell, S. E. (2014). Course-based undergraduate research experiences can make scientific research more inclusive. *CBE—Life Sciences Education*, 13(4), 602–606. https://doi.org/10.1187/cbe.14-06-0099
 
-*Citations were written from memory without database access. Please verify details (especially volume, page numbers, and DOIs) before publishing.*
 
 ---
 
@@ -143,5 +136,3 @@ Department of Chemistry and Biochemistry
 Florida State University  
 Tallahassee, FL 32306  
 xli@chem.fsu.edu
-
-Questions about the curriculum, requests for collaboration, or interest in adapting this module for your institution are welcome.
