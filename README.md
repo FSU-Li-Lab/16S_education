@@ -24,7 +24,7 @@ Student projects have characterized microbial communities in campus water source
 | `Microbial_community_analysis_wetlab_guide.docx` | Step-by-step laboratory workflow (cell collection, direct PCR, bead cleanup, index PCR, library purification) plus guidance for preparing QIIME 2 manifest and metadata files |
 | `16S_rRNA_Colab_Notebook.ipynb` | Google Colab notebook for QIIME 2 analysis (import, DADA2, taxonomy, diversity, ANCOM-BC) |
 | `master_pipeline.sh` | Command-line QIIME 2 script that runs the same analysis end to end (import, primer trimming, DADA2, taxonomy, phylogeny, diversity, ANCOM-BC) on a workstation or server |
-| `SI_Cost.xlsx` | Itemized cost breakdown per sample and per class cohort |
+| `Cost.xlsx` | Itemized cost breakdown per sample and per class cohort |
 
 ---
 
@@ -160,12 +160,6 @@ This module is designed as a Course-based Undergraduate Research Experience (CUR
 
 ---
 
-## Acknowledgments
-
-This work was supported by the Florida State University startup fund, the FSU First-Year Assistant Professor Award, and the Innovations for Gram-Negative Antibiotic Discovery program funded by the Novo Nordisk Foundation (NNF25SA0112407).
-
----
-
 ## References
 
 [1] Song, F., Kuehl, J. V., Chandran, A., & Arkin, A. P. (2021). A simple, cost-effective, and automation-friendly direct PCR approach for bacterial community analysis. *mSystems*, 6(5). https://doi.org/10.1128/mSystems.00224-21
@@ -188,8 +182,6 @@ This work was supported by the Florida State University startup fund, the FSU Fi
 
 [10] Bangera, G., & Brownell, S. E. (2014). Course-based undergraduate research experiences can make scientific research more inclusive. *CBE—Life Sciences Education*, 13(4), 602–606. https://doi.org/10.1187/cbe.14-06-0099
 
-*Citations were written from memory without database access. Please verify details (especially volume, page numbers, and DOIs) before publishing.*
-
 ---
 
 ## Contact
@@ -200,4 +192,3 @@ Florida State University
 Tallahassee, FL 32306  
 xli@chem.fsu.edu
 
-Questions about the curriculum, requests for collaboration, or interest in adapting this module for your institution are welcome.
