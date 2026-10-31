@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# ==============================================================================
+# Generalized QIIME 2 Automated Pipeline
+# ==============================================================================
+
+set -e # Exit immediately if a command exits with a non-zero status
+set -u # Treat unset variables as an error
+
+# ------------------------------------------------------------------------------
+# 1. USER CONFIGURATION (Edit these values)
+# ------------------------------------------------------------------------------
+PROJECT_NAME="gym_microbiome_reanalysis"
+BASE_DIR="/data10/hassan/${PROJECT_NAME}"
+
+# Input File Paths
+MANIFEST="/data10/hassan/gym_microbiome_reanalysis/01_manifest_metadata/manifest.tsv"
+METADATA="/data10/hassan/gym_microbiome_reanalysis/01_manifest_metadata/metadata.tsv"
+CLASSIFIER="/data10/hassan/LC_project/data/silva-138-99-nb-classifier.qza"
+
+# Pipeline Parameters
+SAMPLING_DEPTH=18058
+TRUNC_LEN=131
+THREADS=0 # '0' uses all available cores
+
+# Sample Filtering (IDs to remove, separated by | for regex)
+EXCLUDE_SAMPLES="HB_GE_22|HB_GE_4"
+
+# ------------------------------------------------------------------------------
+# 2. SETUP DIRECTORIES & LOGGING
+# ------------------------------------------------------------------------------
+echo "Creating project structure at ${BASE_DIR}..."
+mkdir -p ${BASE_DIR}/{02_import,03_cutadapt/logs,03_quality,04_dada2,05_taxonomy,06_phylogeny,07_diversity/logs,08_ancombc/logs}
+
+# Define derived metadata paths
+METADATA_FILTERED="${BASE_DIR}/01_manifest_metadata/metadata_filtered.tsv"
+
+# ------------------------------------------------------------------------------
+# 3. IMPORT & QUALITY CONTROL
+# ------------------------------------------------------------------------------
+echo "Step 02: Importing data..."
+qiime tools import \
+  --type 'SampleData[SequencesWithQuality]' \
+  --input-path "$MANIFEST" \
+  --output-path "${BASE_DIR}/02_import/demux.qza" \
+  --input-format SingleEndFastqManifestPhred33V2
+
+echo "Step 03: Trimming primers and checking quality..."
+qiime cutadapt trim-single \
+  --i-demultiplexed-sequences "${BASE_DIR}/02_import/demux.qza" \
+  --p-front GTGYCAGCMGCCGCGGTAA \
+  --p-discard-untrimmed \
+  --p-minimum-length 100 \
+  --o-trimmed-sequences "${BASE_DIR}/03_cutadapt/demux_trimmed.qza" \
+  --output-dir "${BASE_DIR}/03_cutadapt/logs" \
+  --verbose
+
+qiime demux summarize \
+  --i-data "${BASE_DIR}/02_import/demux.qza" \
+  --o-visualization "${BASE_DIR}/03_quality/demux_summary.qzv"
+
+# ------------------------------------------------------------------------------
+# 4. DENOISING (DADA2)
+# ------------------------------------------------------------------------------
+echo "Step 04: Running DADA2 denoising..."
+qiime dada2 denoise-single \
+  --i-demultiplexed-seqs "${BASE_DIR}/03_cutadapt/demux_trimmed.qza" \
+  --p-trim-left 0 \
+  --p-trunc-len $TRUNC_LEN \
+  --p-n-threads $THREADS \
+  --o-table "${BASE_DIR}/04_dada2/feature_table.qza" \
+  --o-representative-sequences "${BASE_DIR}/04_dada2/rep_seqs.qza" \
+  --o-denoising-stats "${BASE_DIR}/04_dada2/denoising_stats.qza" \
+  --o-base-transition-stats "${BASE_DIR}/04_dada2/base_transition_stats.qza" \
+  --verbose 2>&1 | tee "${BASE_DIR}/04_dada2/dada2_log.txt"
+
+# ------------------------------------------------------------------------------
+# 5. TAXONOMY & FILTERING
+# ------------------------------------------------------------------------------
+echo "Step 05: Taxonomic classification and filtering..."
+qiime feature-classifier classify-sklearn \
+  --i-classifier "$CLASSIFIER" \
+  --i-reads "${BASE_DIR}/04_dada2/rep_seqs.qza" \
+  --o-classification "${BASE_DIR}/05_taxonomy/taxonomy.qza" \
+  --p-n-jobs $THREADS
+
+# Filter Table: Remove non-bacterial/contaminant sequences
+qiime taxa filter-table \
+  --i-table "${BASE_DIR}/04_dada2/feature_table.qza" \
+  --i-taxonomy "${BASE_DIR}/05_taxonomy/taxonomy.qza" \
+  --p-exclude mitochondria,chloroplast,Eukaryota,Archaea,Unassigned \
+  --p-include p__ \
+  --o-filtered-table "${BASE_DIR}/05_taxonomy/feature_table_filtered.qza"
+
+# Filter Samples: Remove specified IDs and update metadata
+qiime feature-table filter-samples \
+  --i-table "${BASE_DIR}/05_taxonomy/feature_table_filtered.qza" \
+  --m-metadata-file "$METADATA" \
+  --p-exclude-ids \
+  --p-where "[sample-id] IN ('${EXCLUDE_SAMPLES//|/\',\'}')" \
+  --o-filtered-table "${BASE_DIR}/05_taxonomy/feature_table_final.qza"
+
+grep -vE "$EXCLUDE_SAMPLES" "$METADATA" > "$METADATA_FILTERED"
+
+# ------------------------------------------------------------------------------
+# 6. PHYLOGENY & DIVERSITY
+# ------------------------------------------------------------------------------
+echo "Step 06: Generating phylogenetic tree..."
+qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences "${BASE_DIR}/04_dada2/rep_seqs.qza" \
+  --o-alignment "${BASE_DIR}/06_phylogeny/aligned.qza" \
+  --o-masked-alignment "${BASE_DIR}/06_phylogeny/masked.qza" \
+  --o-tree "${BASE_DIR}/06_phylogeny/unrooted_tree.qza" \
+  --o-rooted-tree "${BASE_DIR}/06_phylogeny/rooted_tree.qza" \
+  --p-n-threads $THREADS
+
+echo "Step 07: Diversity Analysis..."
+qiime diversity core-metrics-phylogenetic \
+  --i-phylogeny "${BASE_DIR}/06_phylogeny/rooted_tree.qza" \
+  --i-table "${BASE_DIR}/05_taxonomy/feature_table_final.qza" \
+  --p-sampling-depth $SAMPLING_DEPTH \
+  --m-metadata-file "$METADATA_FILTERED" \
+  --output-dir "${BASE_DIR}/07_diversity/core_metrics"
+
+# ------------------------------------------------------------------------------
+# 7. DIFFERENTIAL ABUNDANCE (ANCOM-BC)
+# ------------------------------------------------------------------------------
+echo "Step 08: Running ANCOM-BC..."
+qiime taxa collapse \
+  --i-table "${BASE_DIR}/05_taxonomy/feature_table_final.qza" \
+  --i-taxonomy "${BASE_DIR}/05_taxonomy/taxonomy.qza" \
+  --p-level 6 \
+  --o-collapsed-table "${BASE_DIR}/08_ancombc/table_genus.qza"
+
+qiime composition ancombc \
+  --i-table "${BASE_DIR}/08_ancombc/table_genus.qza" \
+  --m-metadata-file "$METADATA_FILTERED" \
+  --p-formula "wipe_brand+equipment_type+time_point" \
+  --o-differentials "${BASE_DIR}/08_ancombc/ancombc_results.qza"
+
+echo "=========================================="
+echo "Pipeline Complete for ${PROJECT_NAME}"
+echo "=========================================="
